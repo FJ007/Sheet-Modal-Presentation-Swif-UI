@@ -11,6 +11,7 @@ import SwiftUI
 struct CategoryDetailView: View {
     
     @Environment(\.presentationMode) var presentationMode
+    @State private var showAlert = false
     var category: Category
     
     var body: some View {
@@ -36,6 +37,33 @@ struct CategoryDetailView: View {
         }
         .edgesIgnoringSafeArea(.top)
         .navigationBarTitle(Text(category.name), displayMode: .automatic)
+        .overlay(
+            HStack {
+                Spacer()
+                VStack {
+                    Button(action: {
+                        self.showAlert = true
+                    }, label: {
+                        Image(systemName: "xmark.circle.fill")
+                            .font(.system(.largeTitle))
+                            .foregroundColor(.white)
+                            .opacity(0.9)
+                            .frame(width: 45, height: 45)
+                    })
+                    .padding(.trailing, 25)
+                    .padding(.top, 15)
+                    Spacer()
+                }
+            }
+        )
+        .alert(isPresented: self.$showAlert) { () -> Alert in
+                Alert(title: Text("Message"),
+                      message: Text("Is your sure?"),
+                      primaryButton: .cancel(),
+                      secondaryButton: .default(Text("OK"), action: {
+                        self.presentationMode.wrappedValue.dismiss()
+                      }))
+        }
     }
 }
 
